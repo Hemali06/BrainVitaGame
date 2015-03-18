@@ -70,6 +70,8 @@ brainVita.Game.prototype = {
 				 { 
 				 marbles[i][j].iIndex = i;
 				 marbles[i][j].jIndex = j;
+				 marbles[i][j].xPosition = marbles[i][j].x;
+				 marbles[i][j].yPosition = marbles[i][j].y;
 				 marbles[i][j].inputEnabled=true;
 				 marbles[i][j].input.enableDrag();
 				 marbles[i][j].events.onDragStop.add(this.onDragStop,this);
@@ -84,69 +86,90 @@ brainVita.Game.prototype = {
         onDragStop : function(sprite,pointer) {
             var iIndex = sprite.iIndex;
             var jIndex = sprite.jIndex;
-        
-
-		    if (iIndex+2<6 && this.board[iIndex+2][jIndex]==0 && this.board[iIndex+1][jIndex]==1) {
-		    	                                         if (pointer.x>=60+jIndex*70 && pointer.x<=130+jIndex*70 && pointer.y>=188+iIndex*72
-		    	                                         	&& pointer.y<=288+iIndex*72) {
+            var update = 0;
+            
+            
+		    if (iIndex+2<6 && this.board[iIndex+2][jIndex]==0 && 
+		    	this.board[iIndex+1][jIndex]==1) {
+                                                    var bounds = new Phaser.Rectangle(30+jIndex*70,25+(iIndex+2)*72,80,80);
+                                                     
+		    	                                         if (sprite.x>bounds.left && sprite.x<bounds.right &&
+		    	                                             sprite.y>bounds.top && sprite.y<bounds.bottom) {
+		    	                                            
 		    	                                            this.board[iIndex+2][jIndex]=1;
 				 	                                        this.board[iIndex+1][jIndex]=0;
 				 	                                        this.board[iIndex][jIndex]=0; 
 				 	                                        this.marbles[iIndex+1][jIndex].kill();  
 				 	                                        this.marbles[iIndex][jIndex].kill();        	
 				 	                                    	this.marbles[iIndex+2][jIndex]=this.add.sprite(60+jIndex*70,50+(iIndex+2)*72,'marble');
+				 	                                        update++;
 				 	                                      } 
-				 	                                      else{
-				 	                                      	sprite.reset(60+jIndex*70,50+iIndex*72);
-				 	                                      }
-				 	                                       
-				 	                                  }
-				 	                                  
-		    if (jIndex+2<6 && this.board[iIndex][jIndex+2]==0 && this.board[iIndex][jIndex+1]==1) {
-		    	                                         if (pointer.x>=60+jIndex*70+140 && pointer.x<=60+jIndex*70+210 && pointer.y>=50+iIndex*72
-		    	                                         	&& pointer.y<=50+iIndex*72+72) {
-		    	                                         this.board[iIndex][jIndex+2]=1;
-				 	                                     this.board[iIndex][jIndex+1]=0;
+				 	                                     
+				 	                                      
+				 	                                     }  
+				 	                           
+		
+	 	                                  
+		 if (jIndex+2<6 && this.board[iIndex][jIndex+2]==0 && this.board[iIndex][jIndex+1]==1) {
+		    	                                         var bounds = new Phaser.Rectangle(30+(jIndex+2)*70,25+iIndex*72,80,80);
+                                                     
+		    	                                         if (sprite.x>bounds.left && sprite.x<bounds.right &&
+		    	                                             sprite.y>bounds.top && sprite.y<bounds.bottom) {
+		    	                                            
+		    	                                         
+		    	                                          this.board[iIndex][jIndex+2]=1;
+				 	                                      this.board[iIndex][jIndex+1]=0;
 				 	                                      this.board[iIndex][jIndex]=0; 
 				 	                                      this.marbles[iIndex][jIndex].kill(); 
 				 		                                  this.marbles[iIndex][jIndex+1].kill();
-				 		                                  this.marbles[iIndex][jIndex+2]=this.add.sprite(60+(jIndex+2)*70,50+(iIndex)*72,'marble');
+				 		                                  this.marbles[iIndex][jIndex+2]=this.add.sprite(60+(jIndex+2)*70,50+iIndex*72,'marble');
+				 	                                      update++;
 				 	                                     } 
-				 	                                      else{
-				 	                                      	sprite.reset(60+jIndex*70,50+iIndex*72);
-				 	                                      }
-				 	                                      }
-			if (iIndex-2>0 && this.board[iIndex-2][jIndex]==0 && this.board[iIndex-1][jIndex]==1) { 
-				                                           if (pointer.x>=60+jIndex*70 && pointer.x<=60+jIndex*70+70 && pointer.y>=50+iIndex*72-144
-		    	                                         	&& pointer.y<=50+iIndex*72-72) {
+				 	                                    
+				 	                                    }
+				 	                                
+		 	                                
+	     if (iIndex-2>0 && this.board[iIndex-2][jIndex]==0 && this.board[iIndex-1][jIndex]==1) { 
+				                                      var bounds = new Phaser.Rectangle(30+jIndex*70,25+(iIndex-2)*72,80,80);
+                                                     
+		    	                                         if (sprite.x>bounds.left && sprite.x<bounds.right &&
+		    	                                             sprite.y>bounds.top && sprite.y<bounds.bottom) {
+		    	                                            
 				                                          this.board[iIndex-2][jIndex]=1;
 				 	                                      this.board[iIndex-1][jIndex]=0; 
-				 	                                        this.board[iIndex][jIndex]=0; 
+				 	                                      this.board[iIndex][jIndex]=0; 
 				 	                                      this.marbles[iIndex][jIndex].kill();
 				 		                                  this.marbles[iIndex-1][jIndex].kill();
 				 		                                  this.marbles[iIndex-2][jIndex]=this.add.sprite(60+jIndex*70,50+(iIndex-2)*72,'marble');
-				 	                                     } 
-				 	                                      else{
-				 	                                      	sprite.reset(60+jIndex*70,50+iIndex*72);
-				 	                                      }
-				 	                                       }
+				 	                                     update++;
+				 	                                     }
+
+				 	    
+				 	                                    }
 				 	                                
-			if (jIndex-2>0 && this.board[iIndex][jIndex-2]==0  && this.board[iIndex][jIndex-1]==1) {
-				                                         if (pointer.x>=60+jIndex*70-140 && pointer.x<=60+jIndex*70-70 && pointer.y>=50+iIndex*72
-		    	                                         	&& pointer.y<=50+iIndex*72+72) {
-				                                          this.board[iIndex][jIndex-2]=1; 
+		
+				 	                                
+		 if (jIndex-2>0 && this.board[iIndex][jIndex-2]==0  && this.board[iIndex][jIndex-1]==1) {
+				                                    var bounds = new Phaser.Rectangle(30+(jIndex-2)*70,25+iIndex*72,80,80);
+                                                     
+		    	                                         if (sprite.x>bounds.left && sprite.x<bounds.right &&
+		    	                                             sprite.y>bounds.top && sprite.y<bounds.bottom) {
+		    	                                            
+				                                          
+				                                         this.board[iIndex][jIndex-2]=1; 
 				 	                                     this.board[iIndex][jIndex-1]=0;
-				 	                                        this.board[iIndex][jIndex]=0; 
+				 	                                     this.board[iIndex][jIndex]=0; 
 				 	                                     this.marbles[iIndex][jIndex].kill(); 
 				 		                                 this.marbles[iIndex][jIndex-1].kill();
-				 		                                 this.marbles[iIndex][jIndex-2]=this.add.sprite(60+(jIndex-2)*70,50+(iIndex)*72,'marble');
+				 		                                 this.marbles[iIndex][jIndex-2]=this.add.sprite(60+(jIndex-2)*70,50+iIndex*72,'marble');
+				 	                                     update++;
 				 	                                     } 
-				 	                                      else{
-				 	                                      	sprite.reset(60+jIndex*70,50+iIndex*72);
-				 	                                      }
-				 	                                     }
-				 	           
-			
+				 	                                    
+				 	                                    }
+			if (update==0) {
+	             	sprite.reset(60+jIndex*70,50+iIndex*72);	 	                           
+			} 	                                    
+				 	                                
 			this.renderBoard(this.marbles);				 
         },
 
@@ -162,7 +185,8 @@ brainVita.Game.prototype = {
 	getAvailableHoles:function(x,y){
 		 this.holes = [];
 			if(this.board[x][y] <= 0)
-				return this.holes
+			{
+				return this.holes; }
 			 if(this.isCellExists(x, y-2)&& this.board[x][y-2] == 0 && this.board[x][y-1]==1 ) 
 			 {
 			  this.holes.push({x:x, y: y-2});
